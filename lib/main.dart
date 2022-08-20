@@ -1,10 +1,13 @@
 import 'dart:convert';
-
+import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'dart:async';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:readsms/readsms.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sms/components/home.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,31 +21,37 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  late SharedPreferences prefs;
+
   final _plugin = Readsms();
+
   String sms = 'no sms received';
   String sender = 'no sms received';
   String time = 'no sms received';
 
-   var res;
+  var res;
 
   Future SaveData() async {
+    prefs = await SharedPreferences.getInstance();
+    var code = prefs.getString('code');
+    var name = prefs.getString('name');
+
     try {
-      final response = await http.post(
-          Uri.parse("https://sms.chatvait.com/api/v1/sms"),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: jsonEncode(<String, String>{
-            "sms": sms,
-            "sender": sender,
-          }));
-      setState(() {
-       
-      });
+      final response =
+          await http.post(Uri.parse("https://sms.chatvait.com/api/v1/sms"),
+              headers: <String, String>{
+                'Content-Type': 'application/json; charset=UTF-8',
+              },
+              body: jsonEncode(<String, String>{
+                "sms": sms,
+                "sender": sender,
+                "code": code.toString(),
+                "time": time,
+                "name": name.toString(),
+              }));
+      setState(() {});
 
       if (response.statusCode == 200) {
-      
-
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -50,8 +59,6 @@ class _MyAppState extends State<MyApp> {
             duration: const Duration(seconds: 2),
           ),
         );
-
-       
       } else {
         setState(() {
           // message = res['message'].toString();
@@ -61,7 +68,6 @@ class _MyAppState extends State<MyApp> {
               duration: const Duration(seconds: 3),
             ),
           );
-          
         });
       }
     } catch (e) {
@@ -117,22 +123,9 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('new sms received: $sms'),
-              Text('new sms Sender: $sender'),
-              Text('new sms time: $time'),
-            ],
-          ),
-        ),
-      ),
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Home(),
     );
   }
 }
