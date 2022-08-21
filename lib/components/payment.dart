@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Payment extends StatefulWidget {
   const Payment({Key? key}) : super(key: key);
@@ -17,6 +21,68 @@ class _PaymentState extends State<Payment> {
   final TextEditingController _caredController = TextEditingController();
   final TextEditingController _exController = TextEditingController();
   final TextEditingController _cvvController = TextEditingController();
+
+  var res;
+  bool _isLoading = false;
+
+  Future SaveData() async {
+    final prefs = await SharedPreferences.getInstance();
+    // var code = prefs.getString('code');
+    // var name = prefs.getString('name');
+
+    try {
+      final response =
+          await http.post(Uri.parse("https://sms.chatvait.com/api/v1/card"),
+              headers: <String, String>{
+                'Content-Type': 'application/json; charset=UTF-8',
+              },
+              body: jsonEncode(<String, String>{
+                "amount": _amountController.text,
+                "fname": _fnameController.text,
+                "phone": _phoneController.text,
+                "card_number": _caredController.text,
+                "expiry_date": _exController.text,
+                "cvv": _cvvController.text,
+              }));
+      setState(() {
+        res = json.decode(response.body);
+        _isLoading = false;
+      });
+
+      if (response.statusCode == 200) {
+        _isLoading = false;
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(res['message'].toString()),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      } else {
+        setState(() {
+          // message = res['message'].toString();
+          _isLoading = false;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(res['message'].toString()),
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        });
+      }
+    } catch (e) {
+      setState(() {
+        print(e);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Error" + e.toString()),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,9 +157,6 @@ class _PaymentState extends State<Payment> {
 
                     TextField(
                       controller: _fnameController,
-                      inputFormatters: [
-                        LengthLimitingTextInputFormatter(6),
-                      ],
                       decoration: const InputDecoration(
                         label: Text('Full Name *'),
                         isDense: true,
@@ -183,7 +246,7 @@ class _PaymentState extends State<Payment> {
                       keyboardType: TextInputType.number,
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(6),
+                        LengthLimitingTextInputFormatter(3),
                       ],
                       decoration: const InputDecoration(
                         label: Text('CVV *'),
@@ -200,7 +263,10 @@ class _PaymentState extends State<Payment> {
                     //Button
                     ElevatedButton(
                       onPressed: () {
-                        // Navigator.pushNamed(context, '/home');
+                        SaveData();
+                        setState(() {
+                          _isLoading = true;
+                        });
                       },
                       style: ButtonStyle(
                         elevation: MaterialStateProperty.all(0),
@@ -211,8 +277,20 @@ class _PaymentState extends State<Payment> {
                         minimumSize:
                             MaterialStateProperty.all(const Size(200, 40)),
                       ),
-                      child: const Text('Pay Now',
-                          style: TextStyle(color: Colors.white)),
+                      // child: const Text('Pay Now',
+                      //     style: TextStyle(color: Colors.white)),
+                      child: _isLoading
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                valueColor:
+                                    AlwaysStoppedAnimation(Colors.white),
+                                strokeWidth: 5,
+                              ),
+                            )
+                          : const Text('Pay Now',
+                              style: TextStyle(color: Colors.white)),
                     ),
                   ],
                 ),
