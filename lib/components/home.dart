@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:sms/components/dashboard.dart';
+import 'package:sms/components/welcome.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -198,7 +199,7 @@ class _HomeState extends State<Home> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
-                  primary: Colors.green.shade800, // background
+                  primary: Colors.blue.shade800, // background
                   onPrimary: Colors.white, // foreground
                   padding: const EdgeInsets.all(15),
                 ),
@@ -208,7 +209,7 @@ class _HomeState extends State<Home> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Dashboard(),
+                        builder: (context) => Welcome(),
                       ),
                     );
                   } else {

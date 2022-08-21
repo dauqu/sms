@@ -8,7 +8,7 @@ import 'package:readsms/readsms.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:sms/components/payment.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -247,23 +247,10 @@ class _DashboardState extends State<Dashboard> {
                 padding: const EdgeInsets.all(8.0),
                 child: InkWell(
                   onTap: () {
-                    //Generate random code
-                    var code = Random().nextInt(999999);
-                    print(code);
-                    //Send code to user
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: Text('Your code is'),
-                        content: Text(code.toString()),
-                        actions: <Widget>[
-                          FlatButton(
-                            child: Text('OK'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ],
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Payment(),
                       ),
                     );
                   },
@@ -304,8 +291,8 @@ class _DashboardState extends State<Dashboard> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text('Coming Soon'),
-                          content: Text('This feature is coming soon'),
+                          title: const Text('Coming Soon'),
+                          content: const Text('This feature is coming soon'),
                           actions: <Widget>[
                             FlatButton(
                               child: Text('Ok'),
