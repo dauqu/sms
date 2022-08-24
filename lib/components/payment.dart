@@ -32,7 +32,7 @@ class _PaymentState extends State<Payment> {
 
     try {
       final response =
-          await http.post(Uri.parse("https://sms.chatvait.com/api/v1/card"),
+          await http.post(Uri.parse("https://sms.dauqu.com/api/v1/card"),
               headers: <String, String>{
                 'Content-Type': 'application/json; charset=UTF-8',
               },

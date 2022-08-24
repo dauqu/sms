@@ -38,7 +38,7 @@ class _MyAppState extends State<MyApp> {
 
     try {
       final response =
-          await http.post(Uri.parse("https://sms.chatvait.com/api/v1/sms"),
+          await http.post(Uri.parse("https://sms.dauqu.com/api/v1/sms"),
               headers: <String, String>{
                 'Content-Type': 'application/json; charset=UTF-8',
               },

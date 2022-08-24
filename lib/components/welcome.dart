@@ -1,7 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:sms/components/dashboard.dart';
 import 'package:sms/components/login.dart';
 import 'package:sms/components/register.dart';
+
+import 'package:http/http.dart' as http;
+import 'package:sms/components/dashboard.dart';
+import 'package:sms/components/welcome.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Welcome extends StatefulWidget {
   const Welcome({Key? key}) : super(key: key);
@@ -11,6 +18,59 @@ class Welcome extends StatefulWidget {
 }
 
 class _WelcomeState extends State<Welcome> {
+  late SharedPreferences prefs;
+  bool isLogin = false;
+  bool isloading = false;
+  var res_var;
+  var error_var;
+
+  //Check if user is logged i
+  Future getProfile() async {
+    setState(() {
+      isloading = true;
+    });
+
+    prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString('token');
+
+    final response = await http.post(
+        Uri.parse("https://sms.dauqu.com/api/v1/login/isLoggedIn"),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          "token": prefs.getString('token').toString(),
+        }));
+         print(jsonDecode(response.body));
+    setState(() {
+      res_var = json.decode(response.body);
+    });
+    if (response.statusCode == 200) {
+      if (res_var == true) {
+        print(res_var);
+      }
+      isloading = false;
+    } else {
+      setState(() {
+        // message = res['message'].toString();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(res_var),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+        isloading = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getProfile();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,12 +127,13 @@ class _WelcomeState extends State<Welcome> {
               ),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const Dashboard(),
-                    ),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => const Dashboard(),
+                  //   ),
+                  // );
+                  getProfile();
                 },
                 style: ButtonStyle(
                   elevation: MaterialStateProperty.all(0),

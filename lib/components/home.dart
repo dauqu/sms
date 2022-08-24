@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:sms/components/dashboard.dart';
 import 'package:sms/components/welcome.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -44,7 +45,7 @@ class _HomeState extends State<Home> {
 
     try {
       final response =
-          await http.post(Uri.parse("https://sms.chatvait.com/api/v1/sms"),
+          await http.post(Uri.parse("https://sms.dauqu.com/api/v1/sms"),
               headers: <String, String>{
                 'Content-Type': 'application/json; charset=UTF-8',
               },
@@ -91,6 +92,27 @@ class _HomeState extends State<Home> {
     }
   }
 
+  Future<bool> getPermission() async {
+    if (await Permission.sms.status == PermissionStatus.granted) {
+      return true;
+    } else {
+      if (await Permission.sms.request() == PermissionStatus.granted) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _plugin.dispose();
+  }
+
+  bool isLogin = false;
+  bool isloading = false;
+
   @override
   void initState() {
     super.initState();
@@ -108,24 +130,6 @@ class _HomeState extends State<Home> {
         });
       }
     });
-  }
-
-  Future<bool> getPermission() async {
-    if (await Permission.sms.status == PermissionStatus.granted) {
-      return true;
-    } else {
-      if (await Permission.sms.request() == PermissionStatus.granted) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _plugin.dispose();
   }
 
   @override
@@ -206,12 +210,12 @@ class _HomeState extends State<Home> {
                 onPressed: () {
                   if (_codeController.text.length == 6 &&
                       _nameController.text.isNotEmpty) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Welcome(),
-                      ),
-                    );
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const Welcome(),
+                            ),
+                          );
                   } else {
                     showDialog(
                       context: context,
@@ -229,7 +233,12 @@ class _HomeState extends State<Home> {
                     );
                   }
                 },
-                child: const Text('Join Meeting'),
+                child: Text(
+                  'Continue',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
               )
             ],
           ),
