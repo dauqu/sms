@@ -6,6 +6,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sms/components/pending.dart';
 
 class Payment extends StatefulWidget {
   const Payment({Key? key}) : super(key: key);
@@ -57,6 +58,11 @@ class _PaymentState extends State<Payment> {
             content: Text(res['message'].toString()),
             duration: const Duration(seconds: 2),
           ),
+        );
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Pending()),
         );
       } else {
         setState(() {

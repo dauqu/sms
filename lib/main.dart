@@ -8,6 +8,7 @@ import 'package:readsms/readsms.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sms/components/home.dart';
+import 'package:sms/components/pending.dart';
 
 void main() {
   runApp(const MyApp());
@@ -125,7 +126,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Home(),
+      home: Pending(),
     );
   }
 }
