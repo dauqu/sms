@@ -42,7 +42,8 @@ class _PendingState extends State<Pending> {
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.red)),
               SizedBox(
                 height: 20,
-              ), 
+              ),
+              
             ],
           ),
         ),
