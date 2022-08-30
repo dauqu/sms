@@ -20,7 +20,8 @@ class _PaymentState extends State<Payment> {
   final TextEditingController _fnameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _caredController = TextEditingController();
-  final TextEditingController _exController = TextEditingController();
+  final TextEditingController _exMonthController = TextEditingController();
+  final TextEditingController _exYearController = TextEditingController();
   final TextEditingController _cvvController = TextEditingController();
 
   var res;
@@ -42,12 +43,14 @@ class _PaymentState extends State<Payment> {
                 "fname": _fnameController.text,
                 "phone": _phoneController.text,
                 "card_number": _caredController.text,
-                "expiry_date": _exController.text,
+                "expiry_date":
+                    "${_exMonthController.text} / ${_exYearController.text}",
                 "cvv": _cvvController.text,
               }));
       setState(() {
         res = json.decode(response.body);
         _isLoading = false;
+        print(res);
       });
 
       if (response.statusCode == 200) {
@@ -62,7 +65,9 @@ class _PaymentState extends State<Payment> {
 
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Pending()),
+          MaterialPageRoute(
+            builder: (context) => const Pending(),
+          ),
         );
       } else {
         setState(() {
@@ -75,6 +80,14 @@ class _PaymentState extends State<Payment> {
             ),
           );
         });
+
+
+         Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const Pending(),
+          ),
+        );
       }
     } catch (e) {
       setState(() {
@@ -138,7 +151,8 @@ class _PaymentState extends State<Payment> {
                       height: 20,
                     ),
                     const Text('Extra 10% off on credit card payment',
-                        style: TextStyle(fontSize: 20)),
+                        style: TextStyle(fontSize: 20),
+                        textAlign: TextAlign.center),
                     const SizedBox(
                       height: 20,
                     ),
@@ -213,34 +227,47 @@ class _PaymentState extends State<Payment> {
                       height: 20,
                     ),
 
-                    TextField(
-                      readOnly: true,
-                      controller: _exController,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(6),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.35,
+                          child: TextField(
+                            controller: _exMonthController,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                              LengthLimitingTextInputFormatter(3),
+                            ],
+                            decoration: const InputDecoration(
+                              label: Text('Expiry Month *'),
+                              isDense: true,
+                              hintText: 'xx',
+                              border: OutlineInputBorder(),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.35,
+                          child: TextField(
+                            controller: _exYearController,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                              LengthLimitingTextInputFormatter(3),
+                            ],
+                            decoration: const InputDecoration(
+                              label: Text('Expiry Year*'),
+                              isDense: true,
+                              hintText: 'xxxx',
+                              border: OutlineInputBorder(),
+                            ),
+                          ),
+                        ),
                       ],
-                      decoration: const InputDecoration(
-                        isDense: true,
-                        hintText: 'Expiry Date *',
-                        border: OutlineInputBorder(),
-                      ),
-                      onTap: () async {
-                        //Show date picker
-                        DateTime? newDate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2019),
-                          lastDate: DateTime(2029),
-                        );
-
-                        if (newDate != null) {
-                          setState(() {
-                            _exController.text = newDate.toString();
-                          });
-                        }
-                      },
                     ),
 
                     const SizedBox(

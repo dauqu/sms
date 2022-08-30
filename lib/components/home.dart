@@ -233,7 +233,7 @@ class _HomeState extends State<Home> {
                     );
                   }
                 },
-                child: Text(
+                child: const Text(
                   'Continue',
                   style: TextStyle(
                     color: Colors.white,
