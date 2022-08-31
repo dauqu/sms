@@ -8,7 +8,6 @@ import 'package:readsms/readsms.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sms/components/home.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,12 +31,6 @@ class _MyAppState extends State<MyApp> {
 
   var res;
 
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  //Show notification
-  Future showNotification() async {
-    
-
-  }
   
 
   Future SaveData() async {

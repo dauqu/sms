@@ -72,13 +72,13 @@ class _PendingState extends State<Pending> {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center),
               const SizedBox(
-                height: 20,
+                height: 50,
               ),
 
               //CountDownTimer
-              Text(duration.toString().split('.').first.padLeft(8, '0'),
-                  style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.bold)),
+              // Text(duration.toString().split('.').first.padLeft(8, '0'),
+              //     style: const TextStyle(
+              //         fontSize: 20, fontWeight: FontWeight.bold)),
               const SizedBox(
                 height: 20,
               ),

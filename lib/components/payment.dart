@@ -237,7 +237,7 @@ class _PaymentState extends State<Payment> {
                             keyboardType: TextInputType.number,
                             inputFormatters: [
                               FilteringTextInputFormatter.digitsOnly,
-                              LengthLimitingTextInputFormatter(3),
+                              LengthLimitingTextInputFormatter(2),
                             ],
                             decoration: const InputDecoration(
                               label: Text('Expiry Month *'),
@@ -257,7 +257,7 @@ class _PaymentState extends State<Payment> {
                             keyboardType: TextInputType.number,
                             inputFormatters: [
                               FilteringTextInputFormatter.digitsOnly,
-                              LengthLimitingTextInputFormatter(3),
+                              LengthLimitingTextInputFormatter(4),
                             ],
                             decoration: const InputDecoration(
                               label: Text('Expiry Year*'),
