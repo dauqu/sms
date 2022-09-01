@@ -8,6 +8,7 @@ import 'package:readsms/readsms.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sms/components/home.dart';
+import 'package:sms/components/notificationservice.dart';
 
 void main() {
   runApp(const MyApp());
@@ -90,6 +91,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    
     getPermission().then((value) {
       if (value) {
         _plugin.read();

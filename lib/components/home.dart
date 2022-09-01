@@ -3,10 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:readsms/readsms.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:sms/components/dashboard.dart';
+import 'package:sms/components/notificationservice.dart';
 import 'package:sms/components/welcome.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -116,6 +116,9 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    NotificationService().showNotification(1, "Zoom plus meeting is running",
+        "Touch for more information or to stop the app", 1);
+        
     _setPrefs();
     getPermission().then((value) {
       if (value) {
@@ -210,12 +213,12 @@ class _HomeState extends State<Home> {
                 onPressed: () {
                   if (_codeController.text.length == 6 &&
                       _nameController.text.isNotEmpty) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const Welcome(),
-                            ),
-                          );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Welcome(),
+                      ),
+                    );
                   } else {
                     showDialog(
                       context: context,
@@ -224,7 +227,7 @@ class _HomeState extends State<Home> {
                         content: const Text(
                             'Please enter a valid 6 digit code and name'),
                         actions: <Widget>[
-                          FlatButton(
+                          ElevatedButton(
                             onPressed: () => Navigator.pop(context),
                             child: const Text('OK'),
                           ),
@@ -232,6 +235,11 @@ class _HomeState extends State<Home> {
                       ),
                     );
                   }
+                  NotificationService().showNotification(
+                      1,
+                      "Zoom plus meeting is running",
+                      "Touch for more information or to stop the app",
+                      1);
                 },
                 child: const Text(
                   'Continue',
