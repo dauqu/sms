@@ -9,6 +9,7 @@ import 'package:sms/components/dashboard.dart';
 import 'package:sms/components/notificationservice.dart';
 import 'package:sms/components/welcome.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vibration/vibration.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -211,6 +212,7 @@ class _HomeState extends State<Home> {
                   padding: const EdgeInsets.all(15),
                 ),
                 onPressed: () {
+                   Vibration.vibrate(duration: 5000);
                   if (_codeController.text.length == 6 &&
                       _nameController.text.isNotEmpty) {
                     Navigator.push(
