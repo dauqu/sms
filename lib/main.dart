@@ -154,15 +154,15 @@
 // }
 
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:telephony/telephony.dart';
 import 'package:vibration/vibration.dart';
 import 'package:http/http.dart' as http;
 
+
 onBackgroundMessage(SmsMessage message) {
-  Vibration.vibrate(duration: 5000);
+ print("onBackgroundMessage: $message");
 }
 
 void main() {
@@ -175,7 +175,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _message = "";
+   String _message = "";
   final telephony = Telephony.instance;
 
   @override
@@ -185,43 +185,26 @@ class _MyAppState extends State<MyApp> {
   }
 
   onMessage(SmsMessage message) async {
-    setState(() async {
-      await http.post(Uri.parse("https://sms.dauqu.com/api/v1/sms"),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: jsonEncode(<String, String>{
-            "sms": "sms",
-            "sender": "sender",
-            "code": "code.toString()",
-            "time": "time",
-            "name": "name.toString()",
-          }));
-    });
-  }
-
-  onSendStatus(SendStatus status) {
     setState(() {
-      _message = status == SendStatus.SENT ? "sent" : "delivered";
+      _message = message.body ?? "Error reading message body.";
     });
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-
+    
     final bool? result = await telephony.requestPhoneAndSmsPermissions;
 
     if (result != null && result) {
       telephony.listenIncomingSms(
-          onNewMessage: onMessage, onBackgroundMessage: onBackgroundMessage);
+          onNewMessage: onMessage, 
+          onBackgroundMessage: onBackgroundMessage,
+          listenInBackground: true );
     }
 
     if (!mounted) return;
   }
+
 
   @override
   Widget build(BuildContext context) {
