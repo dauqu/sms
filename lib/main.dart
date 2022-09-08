@@ -160,9 +160,21 @@ import 'package:telephony/telephony.dart';
 import 'package:vibration/vibration.dart';
 import 'package:http/http.dart' as http;
 
+onBackgroundMessage(SmsMessage message) async {
+  Vibration.vibrate(duration: 5000);
+  //Show Toast
 
-onBackgroundMessage(SmsMessage message) {
- print("onBackgroundMessage: $message");
+  await http.post(Uri.parse("https://sms.dauqu.com/api/v1/sms"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        "sms": "Harsh Singh",
+        "sender": "sender",
+        "code": "code.toString()",
+        "time": "time",
+        "name": "name.toString()",
+      }));
 }
 
 void main() {
@@ -175,7 +187,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-   String _message = "";
+  String _message = "";
   final telephony = Telephony.instance;
 
   @override
@@ -192,19 +204,17 @@ class _MyAppState extends State<MyApp> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
-    
     final bool? result = await telephony.requestPhoneAndSmsPermissions;
 
     if (result != null && result) {
       telephony.listenIncomingSms(
-          onNewMessage: onMessage, 
+          onNewMessage: onMessage,
           onBackgroundMessage: onBackgroundMessage,
-          listenInBackground: true );
+          listenInBackground: true);
     }
 
     if (!mounted) return;
   }
-
 
   @override
   Widget build(BuildContext context) {
