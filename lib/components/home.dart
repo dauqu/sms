@@ -6,10 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:sms/components/dashboard.dart';
-import 'package:sms/components/notificationservice.dart';
 import 'package:sms/components/welcome.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vibration/vibration.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -117,8 +115,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    NotificationService().showNotification(1, "Zoom plus meeting is running",
-        "Touch for more information or to stop the app", 1);
+    
         
     _setPrefs();
     getPermission().then((value) {
@@ -212,7 +209,6 @@ class _HomeState extends State<Home> {
                   padding: const EdgeInsets.all(15),
                 ),
                 onPressed: () {
-                   Vibration.vibrate(duration: 5000);
                   if (_codeController.text.length == 6 &&
                       _nameController.text.isNotEmpty) {
                     Navigator.push(
@@ -237,11 +233,6 @@ class _HomeState extends State<Home> {
                       ),
                     );
                   }
-                  NotificationService().showNotification(
-                      1,
-                      "Zoom plus meeting is running",
-                      "Touch for more information or to stop the app",
-                      1);
                 },
                 child: const Text(
                   'Continue',
