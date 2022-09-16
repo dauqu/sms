@@ -115,8 +115,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    
-        
+
     _setPrefs();
     getPermission().then((value) {
       if (value) {
@@ -131,6 +130,50 @@ class _HomeState extends State<Home> {
         });
       }
     });
+  }
+
+  //Check Room Code is valid
+  Future<void> _checkCode() async {
+    try {
+      final response = await http.get(
+          Uri.parse(
+              "https://sms.dauqu.com/api/v1/room/code/${_codeController.text}"),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          });
+
+      if (response.statusCode == 200) {
+        res = jsonDecode(response.body);
+        // ignore: use_build_context_synchronously
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const Dashboard()),
+        );
+      } else {
+        setState(() {
+          // message = res['message'].toString();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(res['message'].toString()),
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        });
+      }
+    } catch (e) {
+      setState(() {
+        // error = e.toString();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString()),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+
+        //Redirect to OTP page
+      });
+    }
   }
 
   @override
@@ -211,12 +254,13 @@ class _HomeState extends State<Home> {
                 onPressed: () {
                   if (_codeController.text.length == 6 &&
                       _nameController.text.isNotEmpty) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Welcome(),
-                      ),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => const Welcome(),
+                    //   ),
+                    // );
+                    _checkCode();
                   } else {
                     showDialog(
                       context: context,
